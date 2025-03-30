@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Calculator</title>
+    <style>
+        /* styles.css */
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(145deg, #1e293b, #0f172a);
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .calculator {
+            background: #334155;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            width: 300px;
+        }
+
+        #display {
+            width: 100%;
+            padding: 15px;
+            font-size: 2rem;
+            border: none;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            background: #1e293b;
+            color: #fff;
+            text-align: right;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        button {
+            padding: 15px;
+            font-size: 1.5rem;
+            border: none;
+            border-radius: 12px;
+            background: #475569;
+            color: #fff;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #64748b;
+        }
+
+        #toggle-history, #toggle-operations {
+            margin-top: 10px;
+            padding: 10px;
+            width: 100%;
+            background: #1e40af;
+            border-radius: 12px;
+            font-size: 1.2rem;
+        }
+
+        #history {
+            background: #0f172a;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 12px;
+            max-height: 150px;
+            overflow-y: auto;
+            color: #fff;
+        }
+
+        #history p {
+            margin: 5px 0;
+            padding: 5px;
+            background: #1e293b;
+            border-radius: 8px;
+        }
+
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <input type="text" id="display" readonly>
+        <div class="buttons">
+            <button onclick="clearDisplay()">C</button>
+            <button onclick="deleteLastChar()">DEL</button>
+            <button onclick="appendToDisplay('%')">%</button>
+            <button onclick="appendToDisplay('/')">/</button>
+            <button onclick="appendToDisplay('7')">7</button>
+            <button onclick="appendToDisplay('8')">8</button>
+            <button onclick="appendToDisplay('9')">9</button>
+            <button onclick="appendToDisplay('*')">*</button>
+            <button onclick="appendToDisplay('4')">4</button>
+            <button onclick="appendToDisplay('5')">5</button>
+            <button onclick="appendToDisplay('6')">6</button>
+            <button onclick="appendToDisplay('-')">-</button>
+            <button onclick="appendToDisplay('1')">1</button>
+            <button onclick="appendToDisplay('2')">2</button>
+            <button onclick="appendToDisplay('3')">3</button>
+            <button onclick="appendToDisplay('+')">+</button>
+            <button onclick="appendToDisplay('0')">0</button>
+            <button onclick="appendToDisplay('.')">.</button>
+            <button onclick="calculate()">=</button>
+        </div>
+        <button id="toggle-operations" onclick="toggleOperations()">Toggle Advanced Operations</button>
+        <div id="advanced-operations" class="hidden">
+            <button onclick="appendToDisplay('**')">Power</button>
+            <button onclick="appendToDisplay('Math.sqrt(')">Sqrt</button>
+            <button onclick="appendToDisplay('Math.sin(')">Sin</button>
+            <button onclick="appendToDisplay('Math.cos(')">Cos</button>
+            <button onclick="appendToDisplay('Math.tan(')">Tan</button>
+        </div>
+        <button id="toggle-history" onclick="toggleHistory()">Toggle History</button>
+        <div id="history" class="hidden"></div>
+    </div>
+    <script>
+        let history = [];
+
+        function appendToDisplay(value) {
+            document.getElementById("display").value += value;
+        }
+
+        function clearDisplay() {
+            document.getElementById("display").value = "";
+        }
+
+        function deleteLastChar() {
+            let display = document.getElementById("display");
+            display.value = display.value.slice(0, -1);
+        }
+
+        function calculate() {
+            try {
+                let expression = document.getElementById("display").value.replace('%', '/100');
+                let result = eval(expression);
+                document.getElementById("display").value = result;
+                history.push(expression + " = " + result);
+                updateHistory();
+            } catch (error) {
+                document.getElementById("display").value = "Error";
+            }
+        }
+
+        function updateHistory() {
+            let historyDiv = document.getElementById("history");
+            historyDiv.innerHTML = history.map(entry => `<p>${entry}</p>`).join("");
+        }
+
+        function toggleHistory() {
+            let historyDiv = document.getElementById("history");
+            historyDiv.classList.toggle("hidden");
+        }
+
+        function toggleOperations() {
+            let operationsDiv = document.getElementById("advanced-operations");
+            operationsDiv.classList.toggle("hidden");
+        }
+
+        document.getElementById("history").classList.add("hidden");
+        document.getElementById("advanced-operations").classList.add("hidden");
+    </script>
+</body>
+</html>
